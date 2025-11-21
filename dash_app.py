@@ -12,21 +12,21 @@ app = Dash()
 # set page layout
 app.layout = [
     html.H1(children='Title of Dash App', style={'textAlign':'center'}),
-    dcc.Dropdown(df.country.unique(), 'Canada', id='dropdown-selection'),
+    dcc.Dropdown(df.continent.unique(), 'Asia' , id='dropdown-selection'),
     dcc.Graph(id='graph-content')
 ]
-
+#
 @callback(
     Output('graph-content', 'figure'),
     # select indicators
-    Input('dropdown-selection', 'value')
-)
+    Input('dropdown-selection', 'value'))
+#
 def update_graph(value):
-    fig = px.scatter(df, x="gdpPercap", y="lifeExp", animation_frame="year",
+    figure = px.scatter(df, x="gdpPercap", y="lifeExp", animation_frame="year",
          animation_group="country", size="pop", color="continent",
          hover_name="country", log_x=True, size_max=60,
          range_x=[100, 100000], range_y=[25, 90])
-    return fig.show()
+    return figure.show()
 #
 if __name__ == '__main__':
     app.run(debug=False)
