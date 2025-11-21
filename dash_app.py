@@ -1,13 +1,15 @@
-# python C:\Users\Laura\Documents\Python_Scripts\dash_app.py
+# This code Requires Dash 2.17.0 or later
 from dash import Dash, html, dcc, callback, Output, Input
 import plotly.express as px
 import pandas as pd
 
-df = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/gapminder_unfiltered.csv')
+# load dataset
+df = px.data.gapminder()
 
+# start app
 app = Dash()
 
-# Requires Dash 2.17.0 or later
+# set page layout
 app.layout = [
     html.H1(children='Title of Dash App', style={'textAlign':'center'}),
     dcc.Dropdown(df.country.unique(), 'Canada', id='dropdown-selection'),
@@ -16,11 +18,15 @@ app.layout = [
 
 @callback(
     Output('graph-content', 'figure'),
+    # select indicators
     Input('dropdown-selection', 'value')
 )
 def update_graph(value):
-    dff = df[df.country==value]
-    return px.line(dff, x='year', y='pop')
-
+    fig = px.scatter(df, x="gdpPercap", y="lifeExp", animation_frame="year",
+         animation_group="country", size="pop", color="continent",
+         hover_name="country", log_x=True, size_max=60,
+         range_x=[100, 100000], range_y=[25, 90])
+    return fig.show()
+#
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)
